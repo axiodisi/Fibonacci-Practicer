@@ -3,19 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fibonacci Practicer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Fibonacci Scroller Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .sequence-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .number {
+            font-size: 2em;
+            margin: 0 20px;
+        }
+        .current-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #position {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
 </head>
 <body>
-    <div class="flashcard-container">
-        <div id="flashcard" class="flashcard">
-            <span id="sequence-number"></span>
-            <input type="number" id="user-input" placeholder="Your answer">
-            <button onclick="checkAnswer()">Submit</button>
-            <p id="feedback"></p>
+    <div class="game-container">
+        <h1>Fibonacci Scroller Game</h1>
+        <div class="sequence-display">
+            <span class="number" id="prev-number"></span>
+            <span class="number current-number" id="current-number"></span>
+            <span class="number" id="next-number"></span>
         </div>
-        <button onclick="nextFlashcard()">Next</button>
+        <div>
+            <button id="left-btn">← Left</button>
+            <button id="right-btn">Right →</button>
+        </div>
+        <p id="feedback"></p>
+        <p id="position">Position: 1</p>
     </div>
-    <script src="app.js"></script>
+
+    <script>
+        const fibonacciSequence = [0, 1];
+        let currentIndex = 1;
+
+        function generateFibonacci(n) {
+            while (fibonacciSequence.length < n) {
+                const nextNum = fibonacciSequence[fibonacciSequence.length - 1] + fibonacciSequence[fibonacciSequence.length - 2];
+                fibonacciSequence.push(nextNum);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('prev-number').textContent = fibonacciSequence[currentIndex - 1] || '';
+            document.getElementById('current-number').textContent = fibonacciSequence[currentIndex];
+            document.getElementById('next-number').textContent = fibonacciSequence[currentIndex + 1] || '';
+            document.getElementById('position').textContent = `Position: ${currentIndex + 1}`;
+        }
+
+        function moveLeft() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        }
+
+        function moveRight() {
+            if (currentIndex < fibonacciSequence.length - 2) {
+                currentIndex++;
+                updateDisplay();
+            } else {
+                // Generate next Fibonacci number if we're at the end
+                const nextNum = fibonacciSequence[fibonacciSequence.length - 1] + fibonacciSequence[fibonacciSequence.length - 2];
+                fibonacciSequence.push(nextNum);
+                currentIndex++;
+                updateDisplay();
+            }
+        }
+
+        document.getElementById('left-btn').addEventListener('click', moveLeft);
+        document.getElementById('right-btn').addEventListener('click', moveRight);
+
+        // Initialize with first 10 Fibonacci numbers
+        generateFibonacci(10);
+        updateDisplay();
+    </script>
 </body>
 </html>
